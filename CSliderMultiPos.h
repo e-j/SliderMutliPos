@@ -23,6 +23,10 @@
 class CSliderMultiPos : public QSlider{
     Q_OBJECT
 
+    //TODO : fix the working for macos
+    //TODO : add the option for disable interval. And disabled interval is just in a gray color for start...
+    //
+
 public:
     CSliderMultiPos(QWidget * parent = 0);
     CSliderMultiPos( Qt::Orientation orientation, QWidget * parent = 0 );

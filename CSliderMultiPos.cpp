@@ -120,6 +120,7 @@ void CSliderMultiPos::setValue(int posIndex,int value){
         if( handles.at(posIndex).getValue()!=value ){
             handles[posIndex].setValue(value);
             emit valueChange(posIndex,value);
+            repaint();
         }
     }
 }
@@ -231,27 +232,29 @@ void CSliderMultiPos::paintEvent(QPaintEvent* event){
     painter.drawComplexControl(QStyle::CC_Slider, opt);
 
     for( currentIndex=0;currentIndex<nbValues()-1;currentIndex++ ){
-        // handle rects
-        opt.sliderPosition = handles.at(currentIndex).getPosition();
-        const QRect rectHandleFirst = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
-        const int lrv  = pick(rectHandleFirst.center());
+        if( intervals.at(currentIndex).isEnable()  ){
+            // handle rects
+            opt.sliderPosition = handles.at(currentIndex).getPosition();
+            const QRect rectHandleFirst = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
+            const int lrv  = pick(rectHandleFirst.center());
 
-        opt.sliderPosition = handles.at(currentIndex+1).getPosition();
-        const QRect rectHandleSecond = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
-        const int urv  = pick(rectHandleSecond.center());
+            opt.sliderPosition = handles.at(currentIndex+1).getPosition();
+            const QRect rectHandleSecond = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
+            const int urv  = pick(rectHandleSecond.center());
 
-        // span
-        const int minv = qMin(lrv, urv);
-        const int maxv = qMax(lrv, urv);
-        const QPoint c = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this).center();
-        QRect spanRect;
-        if( orientation()==Qt::Horizontal){
-            spanRect = QRect(QPoint(minv, c.y() - 2), QPoint(maxv, c.y() + 1));
+            // span
+            const int minv = qMin(lrv, urv);
+            const int maxv = qMax(lrv, urv);
+            const QPoint c = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this).center();
+            QRect spanRect;
+            if( orientation()==Qt::Horizontal){
+                spanRect = QRect(QPoint(minv, c.y() - 2), QPoint(maxv, c.y() + 1));
+            }
+            else{
+                spanRect = QRect(QPoint(c.x() - 2, minv), QPoint(c.x() + 1, maxv));
+            }
+            drawSpan(&painter, spanRect,currentIndex);
         }
-        else{
-            spanRect = QRect(QPoint(c.x() - 2, minv), QPoint(c.x() + 1, maxv));
-        }
-        drawSpan(&painter, spanRect,currentIndex);
     }
 
     // handles
@@ -259,7 +262,6 @@ void CSliderMultiPos::paintEvent(QPaintEvent* event){
         // Call drawHandle for all, with the last pressed index at last of call (for being on top)
         drawHandle( &painter, (lastPressedIndex+index+1)%nbValues() );
     }
-    event->ignore();
 }
 void  CSliderMultiPos::setInitialValue(int index,int value){
 
