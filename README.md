@@ -8,4 +8,4 @@ Actually the widget is in beta, working under windows. It need refactoring and t
 
 Examples
 ========
-* [http://img59.imageshack.us/img59/3558/slidermultiwinxp.png](Screenshot from Windows XP)
+* [Screenshot from Windows XP](http://img59.imageshack.us/img59/3558/slidermultiwinxp.png)
