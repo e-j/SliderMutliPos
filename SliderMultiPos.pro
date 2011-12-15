@@ -28,6 +28,10 @@ mac{
     CONFIG += x86_64
 }
 
+OTHER_FILES += \
+    README.md
+
+
 
 
 
